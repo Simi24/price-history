@@ -1,7 +1,7 @@
 {
   "name": "price-history",
   "description": "Price history by store from Google Shopping with a deal verdict via SerpApi, for LLM agents",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Simi24"
   },

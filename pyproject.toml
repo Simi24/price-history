@@ -1,6 +1,6 @@
 [project]
 name = "price-history"
-version = "0.1.0"
+version = "0.1.1"
 description = "Price history and current offers across stores from Google Shopping, via SerpApi, with a deal verdict, built for LLM agents"
 readme = "README.md"
 license = "MIT"
