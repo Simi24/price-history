@@ -3,18 +3,20 @@
   price-history [--country it] search "<query>" [--min-price N] [--limit N] [--json]
   price-history [--country it] product <product_id> [--price 299.99] [--json]
   price-history credits
+  price-history setup [--key <key>] [--no-browser]
 
-search and product cost one SerpApi search each (cached for 24 hours); credits is free.
+search and product cost one SerpApi search each (cached for 24 hours); credits and setup are free.
 The verdict compares a price (given with --price, or the cheapest current offer) with the history:
 new_low < all-time low, great = within 5% of the 90-day low, fair = at or below the typical 90-day price, high = above.
-The SerpApi key comes from SERPAPI_KEY or ~/.config/price-history/serpapi_key; the default country from
+The SerpApi key comes from SERPAPI_KEY or ~/.config/serpapi/key (written by `setup`, shared with other
+SerpApi tools); the default country from
 PRICE_HISTORY_COUNTRY (us otherwise).
 """
 
 import argparse
 import sys
 
-from price_history import product, render, serpapi
+from price_history import key, product, render, serpapi
 
 
 def parse_args() -> argparse.Namespace:
@@ -35,6 +37,10 @@ def parse_args() -> argparse.Namespace:
     d.add_argument("--json", action="store_true")
 
     sub.add_parser("credits", help="remaining SerpApi searches (free)")
+
+    st = sub.add_parser("setup", help="save and check the SerpApi key (free)")
+    st.add_argument("--key", help="the key, for non-interactive setup (otherwise it is asked without echo)")
+    st.add_argument("--no-browser", action="store_true", help="do not open the SerpApi sign-up page")
     return p.parse_args()
 
 
@@ -49,6 +55,8 @@ def run(args: argparse.Namespace) -> str:
         case "product":
             result = product.product(args.product_id, args.country, args.price, use_cache)
             return result.model_dump_json(indent=1) if args.json else render.product(result)
+        case "setup":
+            return key.setup(args.key, open_browser=not args.no_browser)
         case _:
             plan, left, used = serpapi.credits()
             return f"SerpApi {plan}: {left} searches left ({used} used this month)"

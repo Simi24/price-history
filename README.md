@@ -32,12 +32,51 @@ Each search or product call costs one SerpApi search (250 a month on the free pl
 
 ```bash
 uv tool install git+https://github.com/Simi24/price-history
-mkdir -p ~/.config/price-history && echo "<your SerpApi key>" > ~/.config/price-history/serpapi_key
-chmod 600 ~/.config/price-history/serpapi_key
-export PRICE_HISTORY_COUNTRY=it   # optional: us, uk, it, de, fr, es (default us)
+# SerpApi key (free plan: 250 searches a month), shared with other SerpApi tools
+price-history setup
+
+export PRICE_HISTORY_COUNTRY=it   # optional default
 ```
 
-`SERPAPI_KEY` in the environment works too.
+Or let your agent do it: [AGENTS.md](AGENTS.md) tells any coding agent how to install and set up the tool.
+
+## Use it from an agent
+
+The CLI works with any agent that has a shell. On top of it:
+
+**Skill** — `skills/price-history/SKILL.md` follows the open [Agent Skills](https://agentskills.io) format, read by Claude Code, Codex, Gemini CLI, Cursor, GitHub Copilot and others. Copy or symlink `skills/price-history` into your agent's skills folder (e.g. `~/.claude/skills/`).
+
+**Claude Code plugin** — the repo is also a plugin (skill + MCP server):
+
+```text
+/plugin marketplace add Simi24/shopping-scouts
+/plugin install price-history@shopping-scouts
+```
+
+**MCP server** — for agents without a shell. It runs straight from GitHub with `uvx`, nothing to install:
+
+```json
+{
+  "mcpServers": {
+    "price-history": {
+      "command": "uvx",
+      "args": ["--from", "price-history[mcp] @ git+https://github.com/Simi24/price-history", "price-history-mcp"],
+      "env": { "PRICE_HISTORY_COUNTRY": "it" }
+    }
+  }
+}
+```
+
+This `mcpServers` block works in Claude Desktop, Cursor (`~/.cursor/mcp.json`) and Gemini CLI (`~/.gemini/settings.json`). In VS Code use the same server under `"servers"` in `.vscode/mcp.json`. In Codex (`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.price_history]
+command = "uvx"
+args = ["--from", "price-history[mcp] @ git+https://github.com/Simi24/price-history", "price-history-mcp"]
+env = { PRICE_HISTORY_COUNTRY = "it" }
+```
+
+All the tools in the family: [shopping-scouts](https://github.com/Simi24/shopping-scouts).
 
 ## Usage
 
@@ -46,33 +85,6 @@ price-history search "roborock qrevo s pro" --min-price 200
 price-history product 6140211472744474228 --price 299.99
 price-history credits
 ```
-
-## Agent skill
-
-`skills/price-history/SKILL.md` tells an agent when to use the tool and how to read a history. For Claude Code:
-
-```bash
-git clone https://github.com/Simi24/price-history
-ln -s "$PWD/price-history/skills/price-history" ~/.claude/skills/price-history
-```
-
-It pairs with [amazon-scout](https://github.com/Simi24/amazon-scout) and [ali-scout](https://github.com/Simi24/ali-scout): they find the options, price-history tells whether the price is good.
-
-## MCP server (optional)
-
-```bash
-uv tool install "price-history[mcp] @ git+https://github.com/Simi24/price-history"
-```
-
-```json
-{
-  "mcpServers": {
-    "price-history": { "command": "price-history-mcp", "env": { "PRICE_HISTORY_COUNTRY": "it" } }
-  }
-}
-```
-
-Tools: `search_products`, `product_history`.
 
 ## Development
 

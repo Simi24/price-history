@@ -6,14 +6,12 @@ Every new call costs one search from the monthly quota (250 on the free plan): a
 import datetime as dt
 import os
 import urllib.parse
-from pathlib import Path
 
-from price_history import http
+from price_history import http, key
 from price_history.models import Listing, Offer, PricePoint, SearchResult
 
 ENDPOINT = "https://serpapi.com/search.json"
 ACCOUNT_ENDPOINT = "https://serpapi.com/account.json"
-KEY_FILE = Path.home() / ".config" / "price-history" / "serpapi_key"
 DEFAULT_COUNTRY = "us"
 # Google `gl` country code -> (`hl` language, `location`)
 COUNTRIES = {
@@ -26,19 +24,15 @@ COUNTRIES = {
 }
 
 
-class MissingKeyError(RuntimeError):
-    """No SerpApi key: set SERPAPI_KEY or write it to ~/.config/price-history/serpapi_key."""
-
-
 class SerpApiError(RuntimeError):
     """SerpApi answered with an error (quota exhausted, invalid key, unknown product...)."""
 
 
+MissingKeyError = key.MissingKeyError
+
+
 def api_key() -> str:
-    key = os.environ.get("SERPAPI_KEY") or (KEY_FILE.read_text().strip() if KEY_FILE.exists() else "")
-    if not key:
-        raise MissingKeyError(f"missing SerpApi key: set SERPAPI_KEY or write it to {KEY_FILE}")
-    return key
+    return key.find()
 
 
 def country(name: str | None = None) -> str:

@@ -5,7 +5,11 @@ description: Price history by store and current offers from Google Shopping, wit
 
 # price-history
 
-The `price-history` command must be on the PATH (`uv tool install git+https://github.com/Simi24/price-history`) and needs a SerpApi key (`SERPAPI_KEY` or `~/.config/price-history/serpapi_key`). Set the country with `--country` or `PRICE_HISTORY_COUNTRY` (us, uk, it, de, fr, es).
+## Setup (only if the command is missing)
+
+- `price-history` not found: propose `uv tool install git+https://github.com/Simi24/price-history` and wait for the person to agree.
+- Exit code 2 with "missing SerpApi key": the person must create a free SerpApi account (250 searches a month) and run `price-history setup` in their own terminal, which reads the key without echoing it and saves it to `~/.config/serpapi/key`. Never ask them to paste the key into the chat.
+- Default country: set `PRICE_HISTORY_COUNTRY` (e.g. `it`) or pass the option on each call.
 
 ## Commands
 

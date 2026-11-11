@@ -1,0 +1,11 @@
+{
+  "name": "price-history",
+  "description": "Price history by store from Google Shopping with a deal verdict via SerpApi, for LLM agents",
+  "version": "0.1.0",
+  "author": {
+    "name": "Simi24"
+  },
+  "homepage": "https://github.com/Simi24/price-history",
+  "repository": "https://github.com/Simi24/price-history",
+  "license": "MIT"
+}
