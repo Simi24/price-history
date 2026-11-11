@@ -6,10 +6,7 @@
         "--from",
         "price-history[mcp] @ git+https://github.com/Simi24/price-history",
         "price-history-mcp"
-      ],
-      "env": {
-        "PRICE_HISTORY_COUNTRY": "us"
-      }
+      ]
     }
   }
 }
